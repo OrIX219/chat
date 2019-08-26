@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Login</title>
+		<link rel="stylesheet" href="login.css">
+	</head>
+	<body>
+		<div>
+			<form class="login" @submit.prevent="login">
+				NAME:
+				<input maxlength="20" v-model="name" ref="name" autofocus />
+				<button>LOGIN</button>
+			</form>
+		</div>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="/scripts/login.js"></script>
+	</body>
+</html>
