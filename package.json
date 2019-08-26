@@ -1,0 +1,20 @@
+{
+  "name": "project1",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "/server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node C:/Test/Project1/server/server.js"
+  },
+  "author": "Artyom",
+  "license": "ISC",
+  "dependencies": {
+    "connect-busboy": "0.0.2",
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0",
+    "socket.io-cookie-parser": "^1.0.0",
+    "vue": "^2.6.6",
+    "vue-cli": "^2.9.6"
+  }
+}
