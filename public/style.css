@@ -41,10 +41,11 @@ form.chat {
 	bottom: 0;
 	margin: 0;
 	padding: 1.5px 3px;
-	width: 90%;
+	width: 90vw;
 	height: 7%;
 	background: rgb(100, 100, 100);
 	border-top: 1px solid rgb(150, 150, 150);
+	min-height: 60px;
 }
 form.chat textarea {
 	background: rgb(50, 50, 50);
@@ -53,35 +54,43 @@ form.chat textarea {
 	border-bottom: 1px solid rgb(150, 150, 150);
 	border-left: 1px solid rgb(150, 150, 150);
 	padding: 5px;
-	width: 85%;
+	width: 80vw;
 	word-wrap: break-word;
 	font-family: "Arial Black";
 	color: rgb(220, 220, 220);
 	resize: none;
-	height: 33px;
+	height: 50%;
 }
 form.chat button {
 	display: inline-block;
-	width: 10%;
-	background: rgb(130, 130, 130);
-	border-right: 1px solid rgb(150, 150, 150);
-	border-top: 1px solid rgb(150, 150, 150);
-	border-bottom: 1px solid rgb(150, 150, 150);
-	border-left: none;
-	padding: 5px 10px;
-	font-family: "Arial Black";
+	width: 1.75vw;
+	min-width: 20px;
+	height: 3.5vh;
+	min-height: 20px;
+	border: none;
+	padding: 0;
+	background-color: rgb(100, 100, 100);
+	margin-left: 0.8vw;
+}
+form.chat button img {
+	width: 100%;
+	height: 100%;
+}
+form.chat button:hover img{
+	filter: opacity(60%);
 }
 form.chat button:hover {
-	background: rgb(120, 120, 120);
-}
-form.chat button:active {
-	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
 }
 form.chat label {
 	display: inline-block;
-	font-family: "Arial Black";
-	font-size: 24px;
-	padding: 0 5px;
+	padding: 5px;
+	height:  50%;
+	width: 30px;
+}
+form.chat label img {
+	width: 100%;
+	height:  100%;
 }
 form.chat label input {
 	display: none;
@@ -126,6 +135,26 @@ form.chat label .tooltip::after {
 	border-color: rgb(150, 150, 150) transparent transparent transparent;
 }
 
+.uploadedImg {
+	position: relative;
+	margin-left: 5px;
+	padding-left: 5px;
+	cursor: default;
+	border: 2px solid rgba(150, 150, 150, 0.5);
+	color: rgb(220, 220, 220);
+}
+.uploadedImg span {
+	padding: 0 5px;
+	border-left: 2px solid rgba(150, 150, 150, 0.2);
+}
+.uploadedImg span:hover {
+	background: rgba(50, 50, 50, 0.2);
+	cursor: pointer;
+}
+.uploadedImg span:active {
+	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
 #messages {
 	position: absolute;
 	overflow-y: auto;
@@ -153,25 +182,6 @@ form.chat label .tooltip::after {
 	color: #E00;
 	text-align: center;
 	font-size: 20px;
-}
-.uploadedImg {
-	position: relative;
-	margin-left: 5px;
-	padding-left: 5px;
-	cursor: default;
-	border: 2px solid rgba(150, 150, 150, 0.5);
-	color: rgb(220, 220, 220);
-}
-.uploadedImg span {
-	padding: 0 5px;
-	border-left: 2px solid rgba(150, 150, 150, 0.2);
-}
-.uploadedImg span:hover {
-	background: rgba(50, 50, 50, 0.2);
-	cursor: pointer;
-}
-.uploadedImg span:active {
-	box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
 }
 
 form.login {

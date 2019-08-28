@@ -37,19 +37,19 @@ class Room {
 		this.users = [];
 		this.msgs = [];
 	}
-	addUser(user, currentRoom) {
+	addUser(user) {
 		this.users.push(user);
-		chat.to(currentRoom.name).emit('conn', user);
+		chat.to(this.name).emit('conn', user);
 		this.msgs.push({name: user, type: 'connect'});
 	}
-	removeUser(user, currentRoom) {
+	removeUser(user) {
 		this.users.splice(this.users.indexOf(user), 1);
-		chat.to(currentRoom.name).emit('disconn', user);
+		chat.to(this.name).emit('disconn', user);
 		this.msgs.push({name: user, type: 'disconnect'});
 	}
-	addMsg(msg, currentRoom) {
+	addMsg(msg) {
 		this.msgs.push(msg);
-		chat.to(currentRoom.name).emit('send msg', msg);
+		chat.to(this.name).emit('send msg', msg);
 	}
 	static createRoom(room) {
 		Room.rooms.set(room, new Room(room));
@@ -64,25 +64,26 @@ Room.createRoom('Main');
 chat.on('connection', (socket) => {
 	socket.on('auth', () => {
 		let id = socket.request.cookies.id;
-		if(id && bd.users.get(id) !== undefined) {
-			socket.join('Main');
-			chat.to(socket.id).emit('auth', true);
+		if(id && bd.users.get(id)) {
 			let currentRoom = Room.rooms.get('Main');
 			let name = bd.users.get(id).name;
+			if(currentRoom.users.includes(name)) { currentRoom.removeUser(name) }
+			socket.join('Main');
+			chat.to(socket.id).emit('auth', true);
 			chat.to(socket.id).emit('get data', Array.from(Room.rooms.keys()), currentRoom.name, currentRoom.msgs, name, currentRoom.users);
-			currentRoom.addUser(name, currentRoom);
+			currentRoom.addUser(name); 
 			console.log(`${id} connected as ${name} to ${currentRoom.name}`);
 			console.log(`Online at ${currentRoom.name} now: ${currentRoom.users}`);
 			socket.on('send msg', (text, imgs) => {
 				text = text.trimRight().trimLeft();
 				if(text.trim() !== '' && imgs.length !== 0) {
 					let pics = imgs.map(i => {return '/imgs/' + i});
-					currentRoom.addMsg({text: text, name: name, imgs: pics, type: 'message'}, currentRoom);
+					currentRoom.addMsg({text: text, name: name, imgs: pics, type: 'message'});
 				} else if(text.trim() !== '' && imgs.length === 0) {
-					currentRoom.addMsg({text: text, name: name, type: 'message'}, currentRoom);
+					currentRoom.addMsg({text: text, name: name, type: 'message'});
 				} else if(text.trim() === '' && imgs.length !== 0) {
 					let pics = imgs.map(i => {return '/imgs/' + i});
-					currentRoom.addMsg({name: name, imgs: pics, type: 'message'}, currentRoom);
+					currentRoom.addMsg({name: name, imgs: pics, type: 'message'});
 				} else {
 					return false;
 				}
@@ -125,15 +126,17 @@ chat.on('connection', (socket) => {
 			socket.on('change room', room => {
 				console.log(`${name} has moved from ${currentRoom.name} to ${room}`);
 				socket.leave(currentRoom.name);
-				currentRoom.removeUser(name, currentRoom);
+				currentRoom.removeUser(name);
 				currentRoom = Room.rooms.get(room);
 				socket.join(currentRoom.name);
 				chat.to(socket.id).emit('get data', Array.from(Room.rooms.keys()), currentRoom.name, currentRoom.msgs, name, currentRoom.users);
 				currentRoom.addUser(name, currentRoom);
 			});
 			socket.on('disconnect', () => {
-				currentRoom.removeUser(name, currentRoom);
-				console.log(`${name} disconnected`);
+				if(socket.id === socket.request.cookies.io) {
+					currentRoom.removeUser(name);
+					console.log(`${id} | ${name} disconnected`);
+				}
 			});
 		} else {
 			chat.to(socket.id).emit('auth', false);
@@ -144,8 +147,16 @@ chat.on('connection', (socket) => {
 login.on('connection', (socket) => {
 	console.log('User connected');
 	socket.on('login', (name) => {
-		bd.login(name, socket.id.slice(7));
-		socket.emit('login', socket.id.slice(7));
+		var exists = false;
+		bd.users.forEach(user => {
+			if(user.name === name) { exists = true; }
+		});
+		if(exists) {
+			socket.emit('exists');
+		} else {
+			bd.login(name, socket.id.slice(7));
+			socket.emit('login', socket.id.slice(7));
+		}
 	});
 });
 

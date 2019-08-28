@@ -5,10 +5,14 @@ socket.on('login', (id) => {
 	document.cookie = `id=${id}; expires=${d}`;
 	location.replace(location.origin);
 });
-new Vue({
+socket.on('exists', () => {
+	login.exists = true;
+});
+const login = new Vue({
 	el: 'form.login',
 	data: {
-		name: ''
+		name: '',
+		exists: false
 	},
 	methods: {
 		login: function() {
@@ -16,8 +20,13 @@ new Vue({
 			if(name.trim() !== '') {
 				socket.emit('login', name);
 			} else {
-				return false
+				return false;
 			}
+		}
+	},
+	watch: {
+		name: function(name) {
+			this.exists = false;
 		}
 	}
 });

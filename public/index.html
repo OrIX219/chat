@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<div id="loading"><span>Loading...</span></div>
-		<ul id="messages"><item v-for="msg in msgs" :msg=msg :sys=msg.sys></item></ul>
+		<ul id="messages"><message v-for="msg in msgs" :msg=msg :sys=msg.sys></message></ul>
 		<transition name="opt" id="opts">
 			<div class="opts" v-if="showCR" key="CR">
 				<span @click="close">&#10006</span>
@@ -28,16 +28,14 @@
 			</div>
 		</transition>
 		<form class="chat" @submit.prevent="sendMsg">
-			<textarea autocomplete="off" v-model="text" ref="msg" @keydown.enter.prevent @keydown.enter.exact="sendMsg"></textarea>
 			<label>
 				<input type="file" ref="files" @change="handleImgUpload($event)" multiple />
-				<span>
-					+
-					<div class="tooltip">Attach image<br/>(1mb max)</div>
-				</span>
+				<img src="sysImgs/uploadImage.png">
+				<div class="tooltip">Attach image<br/>(1mb max)</div>
 			</label>
-			<button ref="send">SEND</button><br/>
-			<div v-for="(file, key) in files" class="uploadedImg">{{file.name}} <span @click="removeFile(key)">X</span></div>
+			<textarea autocomplete="off" v-model="text" ref="msg" @keydown.enter.prevent @keydown.enter.exact="sendMsg"></textarea>
+			<button ref="send"><img src="sysImgs/send.png" /></button>
+			<div v-for="(file, key) in files" class="uploadedImg">{{file.name}}<span @click="removeFile(key)">X</span></div>
 		</form>
 		<aside id='sidebar'>
 			<h2>{{currentRoom}}</h2>

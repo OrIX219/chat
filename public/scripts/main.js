@@ -2,12 +2,10 @@ const socket = io();
 socket.emit('auth');
 socket.on('auth', function(auth) {
 	if(auth) {
-		Vue.component('item', {
+		Vue.component('message', {
 		props: ['msg', 'sys'],
-		template: `<li v-if="sys" class="sysmsg"><img src="/imgs/MrDestructoid.png" alt="" /> {{msg.text}} <img src="/imgs/MrDestructoid.png" alt="" /></li>
-		<li v-else-if="msg.imgs && msg.text"><u><font color="lightslategrey">{{msg.name}}</font></u>:<br/>{{msg.text}}<br/><pic v-for="img in msg.imgs" :img=img></pic></li>
-		<li v-else-if="!msg.text && msg.imgs"><u><font color="lightslategrey">{{msg.name}}</font></u>:<br/><pic v-for="img in msg.imgs" :img=img></pic></li>
-		<li v-else><u><font color="lightslategrey">{{msg.name}}</font></u>:<br/>{{msg.text}}</li>`
+		template: `<li v-if="sys" class="sysmsg"><img src="/sysImgs/MrDestructoid.png" alt="⟫"/> {{msg.text}} <img src="/sysImgs/MrDestructoid.png" alt="⟪" /></li>
+		<li v-else><u><font color="lightslategrey">{{msg.name}}</font></u>:<br/><div v-if="msg.text">{{msg.text}}<br/></div><pic v-if="msg.imgs" v-for="img in msg.imgs" :img=img></pic></li>`
 		});
 		Vue.component('pic', {
 			props: ['img'],
@@ -113,6 +111,7 @@ socket.on('auth', function(auth) {
 			},
 			methods: {
 				sendMsg: async function() {
+					this.$refs.msg.focus();
 					if(this.text.trim() === '' && this.files.length === 0) {
 						return false;
 					} else {

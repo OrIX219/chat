@@ -9,7 +9,8 @@
 			<form class="login" @submit.prevent="login">
 				NAME:
 				<input maxlength="20" v-model="name" ref="name" autofocus />
-				<button>LOGIN</button>
+				<button>LOGIN</button><br/>
+				<h5 v-if="exists">This name is already taken</h5>
 			</form>
 		</div>
 		<script src="/socket.io/socket.io.js"></script>
