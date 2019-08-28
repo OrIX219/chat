@@ -23,8 +23,8 @@ io.engine.generateId = (req) => {
 
 const bd = {
 	users: new Map(),
-	login: function(name, id) {
-		this.users.set(id, {name: name, rooms: []});
+	login: function(session, name, id) {
+		this.users.set(id, {session: session, name: name, rooms: []});
 	},
 	changeName: function(nname, id) {
 		this.users.set(id, {name: nname, rooms: this.users.get(id).rooms});
@@ -65,6 +65,7 @@ chat.on('connection', (socket) => {
 	socket.on('auth', () => {
 		let id = socket.request.cookies.id;
 		if(id && bd.users.get(id)) {
+			bd.users.get(id).session = socket.id;
 			let currentRoom = Room.rooms.get('Main');
 			let name = bd.users.get(id).name;
 			if(currentRoom.users.includes(name)) { currentRoom.removeUser(name) }
@@ -133,7 +134,7 @@ chat.on('connection', (socket) => {
 				currentRoom.addUser(name, currentRoom);
 			});
 			socket.on('disconnect', () => {
-				if(socket.id === socket.request.cookies.io) {
+				if(socket.id === bd.users.get(id).session) {
 					currentRoom.removeUser(name);
 					console.log(`${id} | ${name} disconnected`);
 				}
@@ -154,7 +155,7 @@ login.on('connection', (socket) => {
 		if(exists) {
 			socket.emit('exists');
 		} else {
-			bd.login(name, socket.id.slice(7));
+			bd.login(socket.id.slice(7), name, socket.id.slice(7));
 			socket.emit('login', socket.id.slice(7));
 		}
 	});
